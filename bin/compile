@@ -14,6 +14,14 @@ if [ -e "$ENV_DIR/DATABASE_URL" ]; then
   export DATABASE_URL="$(cat $ENV_DIR/DATABASE_URL)";
 fi
 
+if [ -e "$ENV_DIR/GITLAB_USER" ]; then
+  export GITLAB_USER="$(cat $ENV_DIR/GITLAB_USER)";
+fi
+
+if [ -e "$ENV_DIR/GITLAB_PW" ]; then
+  export GITLAB_PW="$(cat $ENV_DIR/GITLAB_PW)";
+fi
+
 # Set defaults for our configuration variables.  Stable Rust is sufficiently
 # stable at this point that I think we can just default it.
 VERSION=stable
@@ -135,11 +143,10 @@ if [ $RUST_SKIP_BUILD -ne 1 ]; then
   #export RUST_LOG="cargo::sources::git=debug"
   # To debug compiler and linking issues, add `--verbose`.
   echo "-----> Building application using Cargo"  
+  git config --global credential.https://gitlab.com.username $GITLAB_USER
+  git config --global credential.https://gitlab.com.password $GITLAB_PW
   cd "$BUILD_DIR/$BUILD_PATH"
-  ls .
-  cat .git-credentials
-  git init
-  git config credential.helper 'store --file .git-credentials'
+  
   rm -rf target/
   cargo build $RUST_CARGO_BUILD_FLAGS
   mkdir -p target/release
