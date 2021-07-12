@@ -143,8 +143,7 @@ if [ $RUST_SKIP_BUILD -ne 1 ]; then
   #export RUST_LOG="cargo::sources::git=debug"
   # To debug compiler and linking issues, add `--verbose`.
   echo "-----> Building application using Cargo"  
-  git config --global credential.https://gitlab.com.username $GITLAB_USER
-  git config --global credential.https://gitlab.com.password $GITLAB_PW
+  git config --global credential.helper store
   cd "$BUILD_DIR/$BUILD_PATH"
   
   rm -rf target/
